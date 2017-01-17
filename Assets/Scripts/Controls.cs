@@ -51,7 +51,7 @@ public class Controls : MonoBehaviour {
         }
 	}
 
-    bool checkBounds(Vector3 direction)
+    public bool checkBounds(Vector3 direction)
     {
         Ray assumedObstacleDirection = new Ray(gameObject.transform.position, direction);
         if(Physics.Raycast(assumedObstacleDirection, 1.0f))
