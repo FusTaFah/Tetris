@@ -24,8 +24,15 @@ public class Controls : MonoBehaviour {
         RaycastHit raycastIdentity;
         if (Physics.Raycast(assumedObstacleDirection, out raycastIdentity, 1.0f))
         {
-            if(raycastIdentity.collider.gameObject.GetComponent<Controls>())
-            return true;
+            if (raycastIdentity.collider.gameObject.GetComponent<Controls>().InPlay)
+            {
+                return false;
+            }
+            else
+            {
+                return true;
+            }
+            
         }
         return false;
     }

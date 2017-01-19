@@ -4,15 +4,20 @@ using UnityEngine;
 
 public class Commander : MonoBehaviour {
 
-    ArrayList tetriminoPiecesInControl;
+    GameObject[] tetriminoPiecesInControl;
 
 	// Use this for initialization
 	void Start () {
-		
+        tetriminoPiecesInControl = new GameObject[0];
 	}
 	
 	// Update is called once per frame
 	void Update () {
+        if(tetriminoPiecesInControl.Length == 0)
+        {
+            Debug.Log("get pieces");
+            tetriminoPiecesInControl = GameObject.FindGameObjectsWithTag("TetriminoPiece");
+        }
         if (Input.GetKeyDown(KeyCode.A))
         {
             //move left
@@ -37,13 +42,23 @@ public class Commander : MonoBehaviour {
 
     void attemptMovement(Vector3 movementDirection)
     {
+        bool allClear = true;
         foreach(GameObject piece in tetriminoPiecesInControl)
         {
-            if (!piece.GetComponent<Controls>().checkBounds(movementDirection))
+            if (piece.GetComponent<Controls>().checkBounds(movementDirection))
+            {
+                allClear = false;
+                break;
+            }
+        }
+
+        if (allClear)
+        {
+            foreach(GameObject piece in tetriminoPiecesInControl)
             {
                 gameObject.transform.position += new Vector3(-1.0f, 0.0f, 0.0f);
             }
         }
-        
+
     }
 }
