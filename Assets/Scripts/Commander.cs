@@ -28,11 +28,6 @@ public class Commander : MonoBehaviour {
             //move right
             attemptMovement(new Vector3(1.0f, 0.0f, 0.0f));
         }
-        else if (Input.GetKeyDown(KeyCode.W))
-        {
-            //move up
-            attemptMovement(new Vector3(0.0f, 1.0f, 0.0f));
-        }
         else if (Input.GetKeyDown(KeyCode.S))
         {
             //move down
@@ -45,10 +40,13 @@ public class Commander : MonoBehaviour {
         bool allClear = true;
         foreach(GameObject piece in tetriminoPiecesInControl)
         {
-            if (piece.GetComponent<Controls>().checkBounds(movementDirection))
+            if (piece.GetComponent<Controls>().InPlay)
             {
-                allClear = false;
-                break;
+                if (piece.GetComponent<Controls>().checkBounds(movementDirection))
+                {
+                    allClear = false;
+                    break;
+                }
             }
         }
 
@@ -56,7 +54,10 @@ public class Commander : MonoBehaviour {
         {
             foreach(GameObject piece in tetriminoPiecesInControl)
             {
-                piece.transform.position += movementDirection;
+                if (piece.GetComponent<Controls>().InPlay)
+                {
+                    piece.transform.position += movementDirection;
+                }
             }
         }
 
