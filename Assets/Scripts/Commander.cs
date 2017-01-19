@@ -56,7 +56,7 @@ public class Commander : MonoBehaviour {
         {
             foreach(GameObject piece in tetriminoPiecesInControl)
             {
-                gameObject.transform.position += movementDirection;
+                piece.transform.position += movementDirection;
             }
         }
 
