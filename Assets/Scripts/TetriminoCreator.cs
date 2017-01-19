@@ -13,4 +13,9 @@ public class TetriminoCreator : MonoBehaviour {
 	void Update () {
 		
 	}
+
+    public void TetriminoDeployed()
+    {
+        Instantiate(Resources.Load("Prefabs/TetriminoPiece"), gameObject.transform.position, Quaternion.identity);
+    }
 }

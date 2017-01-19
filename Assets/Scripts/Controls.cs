@@ -5,13 +5,9 @@ using UnityEngine;
 public class Controls : MonoBehaviour {
 
     bool m_inPlay;
-
     float m_fallDelay;
-
     float m_timer;
-
-    public bool InPlay { get { return m_inPlay; } }
-
+    public bool InPlay { get { return m_inPlay; } set { m_inPlay = value; } }
     public float FallDelay { get { return m_fallDelay; } set { m_fallDelay = value; } }
 
 	// Use this for initialization
@@ -23,19 +19,28 @@ public class Controls : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-        m_timer += Time.deltaTime;
-        if(m_timer >= m_fallDelay)
+        if (InPlay)
         {
-            if (!checkBounds(new Vector3(0.0f, -1.0f, 0.0f)))
+            m_timer += Time.deltaTime;
+            if (m_timer >= m_fallDelay)
             {
-                gameObject.transform.position += new Vector3(0.0f, -1.0f, 0.0f);
+                if (!checkBounds(new Vector3(0.0f, -1.0f, 0.0f)))
+                {
+                    gameObject.transform.position += new Vector3(0.0f, -1.0f, 0.0f);
+                }
+                else
+                {
+                    m_inPlay = false;
+                    foreach (GameObject g in GameObject.FindGameObjectsWithTag("TetriminoPiece"))
+                    {
+                        g.GetComponent<Controls>().InPlay = false;
+                    }
+                    GameObject.Find("TetriminoFactory").GetComponent<TetriminoCreator>().TetriminoDeployed();
+                }
+                m_timer = 0.0f;
             }
-            else
-            {
-                m_inPlay = false;
-            }
-            m_timer = 0.0f;
         }
+        
 	}
 
     public bool checkBounds(Vector3 direction)
