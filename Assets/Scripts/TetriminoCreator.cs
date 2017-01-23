@@ -46,7 +46,7 @@ public class TetriminoCreator : MonoBehaviour {
 
     public void TetriminoDeployed()
     {
-        int shapeIndex = (int)(Mathf.Floor(Random.value * 4.0f));
+        int shapeIndex = 2;//(int)(Mathf.Floor(Random.value * 4.0f));
         foreach(Vector3 position in m_patterns[shapeIndex])
         {
             GameObject tetriminoPiece = (GameObject)Instantiate(Resources.Load("Prefabs/TetriminoPiece"), gameObject.transform.position + position, Quaternion.identity);

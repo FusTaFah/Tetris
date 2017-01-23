@@ -48,7 +48,7 @@ public class Commander : MonoBehaviour {
     void attemptMovement(Vector3 movementDirection)
     {
         bool allClear = true;
-        foreach(GameObject piece in tetriminoPiecesInControl)
+        foreach(GameObject piece in GameObject.FindGameObjectsWithTag("TetriminoPiece"))
         {
             if (piece.GetComponent<Controls>().InPlay)
             {
@@ -62,7 +62,7 @@ public class Commander : MonoBehaviour {
 
         if (allClear)
         {
-            foreach(GameObject piece in tetriminoPiecesInControl)
+            foreach(GameObject piece in GameObject.FindGameObjectsWithTag("TetriminoPiece"))
             {
                 if (piece.GetComponent<Controls>().InPlay)
                 {
@@ -83,7 +83,7 @@ public class Commander : MonoBehaviour {
     {
         bool verifiedForMovement = true;
         
-        foreach (GameObject g in tetriminoPiecesInControl)
+        foreach (GameObject g in GameObject.FindGameObjectsWithTag("TetriminoPiece"))
         {
             if (g.GetComponent<Controls>().InPlay)
             {
@@ -98,7 +98,7 @@ public class Commander : MonoBehaviour {
             
         if (!verifiedForMovement)
         {
-            foreach (GameObject g in tetriminoPiecesInControl)
+            foreach (GameObject g in GameObject.FindGameObjectsWithTag("TetriminoPiece"))
             {
                 if (g != gameObject && g.GetComponent<Controls>().InPlay)
                 {
@@ -106,11 +106,13 @@ public class Commander : MonoBehaviour {
                 }
             }
             GameObject.Find("TetriminoFactory").GetComponent<TetriminoCreator>().TetriminoDeployed();
+            GameObject.Find("TetriminoVerifier").GetComponent<TetriminoVerifier>().SignalTetriminoVerifier();
             SignalDeployed();
+
         }
         else
         {
-            foreach (GameObject g in tetriminoPiecesInControl)
+            foreach (GameObject g in GameObject.FindGameObjectsWithTag("TetriminoPiece"))
             {
                 if (g.GetComponent<Controls>().InPlay)
                 {

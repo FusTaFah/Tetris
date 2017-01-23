@@ -8,7 +8,7 @@ public class TetriminoVerifier : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-		
+        m_startingPosition = new Vector3(-6.0f, 10.0f, 0.0f);
 	}
 	
 	// Update is called once per frame
@@ -19,7 +19,7 @@ public class TetriminoVerifier : MonoBehaviour {
     public void SignalTetriminoVerifier()
     {
         //do a massive amount of computation for no fucking reason
-        for(int i = 0; i < 13; i++)
+        for(int i = 0; i < 14; i++)
         {
             int lineScore = 0;
             RaycastHit[] hits = Physics.RaycastAll(new Ray(gameObject.transform.position, new Vector3(1.0f, 0.0f, 0.0f)));
@@ -30,13 +30,18 @@ public class TetriminoVerifier : MonoBehaviour {
                     lineScore++;
                 }
             }
-            if(lineScore > 9)
+            if(lineScore > 10)
             {
                 foreach(RaycastHit hit in hits)
                 {
-                    Destroy(hit.collider.gameObject);
+                    if(hit.collider.gameObject.tag == "TetriminoPiece")
+                    {
+                        Destroy(hit.collider.gameObject);
+                    }
                 }
             }
+            gameObject.transform.position += new Vector3(0.0f, -1.0f, 0.0f);
         }
+        gameObject.transform.position = m_startingPosition;
     }
 }
