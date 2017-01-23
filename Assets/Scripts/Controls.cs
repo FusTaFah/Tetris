@@ -5,45 +5,16 @@ using UnityEngine;
 public class Controls : MonoBehaviour {
 
     bool m_inPlay;
-    float m_fallDelay;
-    float m_timer;
+    
     public bool InPlay { get { return m_inPlay; } set { m_inPlay = value; } }
-    public float FallDelay { get { return m_fallDelay; } set { m_fallDelay = value; } }
-
+    
 	// Use this for initialization
 	void Start () {
         m_inPlay = true;
-        m_fallDelay = 1.0f;
-        m_timer = 0.0f;
 	}
 	
 	// Update is called once per frame
 	void Update () {
-        if (InPlay)
-        {
-            m_timer += Time.deltaTime;
-            if (m_timer >= m_fallDelay)
-            {
-                if (!checkBounds(new Vector3(0.0f, -1.0f, 0.0f)))
-                {
-                    gameObject.transform.position += new Vector3(0.0f, -1.0f, 0.0f);
-                }
-                else
-                {
-                    m_inPlay = false;
-                    foreach (GameObject g in GameObject.FindGameObjectsWithTag("TetriminoPiece"))
-                    {
-                        if(g != gameObject && g.GetComponent<Controls>().InPlay)
-                        {
-                            g.GetComponent<Controls>().InPlay = false;
-                        }
-                    }
-                    GameObject.Find("TetriminoFactory").GetComponent<TetriminoCreator>().TetriminoDeployed();
-                    GameObject.Find("Main Camera").GetComponent<Commander>().SignalDeployed();
-                }
-                m_timer = 0.0f;
-            }
-        }
         
 	}
 

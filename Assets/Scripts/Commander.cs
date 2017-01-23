@@ -5,9 +5,12 @@ using UnityEngine;
 public class Commander : MonoBehaviour {
 
     GameObject[] tetriminoPiecesInControl;
+    float m_timer;
+    public float m_fallDelay;
+    public float FallDelay { get { return m_fallDelay; } set { m_fallDelay = value; } }
 
-	// Use this for initialization
-	void Start () {
+    // Use this for initialization
+    void Start () {
         tetriminoPiecesInControl = new GameObject[0];
 	}
 	
@@ -33,6 +36,13 @@ public class Commander : MonoBehaviour {
             //move down
             attemptMovement(new Vector3(0.0f, -1.0f, 0.0f));
         }
+
+        if (m_timer >= m_fallDelay)
+        {
+            UpdateAllPlayableTetriminos();
+            m_timer = 0.0f;
+        }
+        m_timer += Time.deltaTime;
     }
 
     void attemptMovement(Vector3 movementDirection)
@@ -67,5 +77,47 @@ public class Commander : MonoBehaviour {
     {
         tetriminoPiecesInControl = new GameObject[0];
         tetriminoPiecesInControl = GameObject.FindGameObjectsWithTag("TetriminoPiece");
+    }
+
+    void UpdateAllPlayableTetriminos()
+    {
+        bool verifiedForMovement = true;
+        
+        foreach (GameObject g in tetriminoPiecesInControl)
+        {
+            if (g.GetComponent<Controls>().InPlay)
+            {
+                if (g.GetComponent<Controls>().checkBounds(new Vector3(0.0f, -1.0f, 0.0f)))
+                {
+                    verifiedForMovement = false;
+                    break;
+                }
+            }
+            
+        }
+            
+        if (!verifiedForMovement)
+        {
+            foreach (GameObject g in tetriminoPiecesInControl)
+            {
+                if (g != gameObject && g.GetComponent<Controls>().InPlay)
+                {
+                    g.GetComponent<Controls>().InPlay = false;
+                }
+            }
+            GameObject.Find("TetriminoFactory").GetComponent<TetriminoCreator>().TetriminoDeployed();
+            SignalDeployed();
+        }
+        else
+        {
+            foreach (GameObject g in tetriminoPiecesInControl)
+            {
+                if (g.GetComponent<Controls>().InPlay)
+                {
+                    g.transform.position += new Vector3(0.0f, -1.0f, 0.0f);
+                }
+            }
+        }
+
     }
 }
