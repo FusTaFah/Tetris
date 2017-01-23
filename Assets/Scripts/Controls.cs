@@ -33,9 +33,13 @@ public class Controls : MonoBehaviour {
                     m_inPlay = false;
                     foreach (GameObject g in GameObject.FindGameObjectsWithTag("TetriminoPiece"))
                     {
-                        g.GetComponent<Controls>().InPlay = false;
+                        if(g != gameObject && g.GetComponent<Controls>().InPlay)
+                        {
+                            g.GetComponent<Controls>().InPlay = false;
+                        }
                     }
                     GameObject.Find("TetriminoFactory").GetComponent<TetriminoCreator>().TetriminoDeployed();
+                    GameObject.Find("Main Camera").GetComponent<Commander>().SignalDeployed();
                 }
                 m_timer = 0.0f;
             }

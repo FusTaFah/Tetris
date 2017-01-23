@@ -62,4 +62,10 @@ public class Commander : MonoBehaviour {
         }
 
     }
+
+    public void SignalDeployed()
+    {
+        tetriminoPiecesInControl = new GameObject[0];
+        tetriminoPiecesInControl = GameObject.FindGameObjectsWithTag("TetriminoPiece");
+    }
 }
