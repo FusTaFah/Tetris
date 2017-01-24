@@ -50,7 +50,7 @@ public class TetriminoVerifier : MonoBehaviour {
                 }
             }else
             {
-                m_tetriminosToMoveDown.Concat(potentialAdditions);
+                m_tetriminosToMoveDown = m_tetriminosToMoveDown.Concat(potentialAdditions).ToList();
             }
             gameObject.transform.position += new Vector3(0.0f, -1.0f, 0.0f);
         }

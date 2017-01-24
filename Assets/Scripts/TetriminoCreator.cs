@@ -56,7 +56,7 @@ public class TetriminoCreator : MonoBehaviour {
         {
             DEBUG_STAGGERED.Add(originOfDebug + new Vector3(i, 1.0f, 0.0f));
         }
-        DEBUG_STAGGERED.Concat(DEBUG);
+        DEBUG_STAGGERED = DEBUG_STAGGERED.Concat(DEBUG).ToList();
         m_patterns.Add(DEBUG_STAGGERED);
 
         TetriminoDeployed();
