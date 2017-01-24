@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Linq;
 
 public class TetriminoVerifier : MonoBehaviour {
 
@@ -49,7 +50,7 @@ public class TetriminoVerifier : MonoBehaviour {
                 }
             }else
             {
-                m_tetriminosToMoveDown.AddRange(potentialAdditions);
+                m_tetriminosToMoveDown.Concat(potentialAdditions);
             }
             gameObject.transform.position += new Vector3(0.0f, -1.0f, 0.0f);
         }
