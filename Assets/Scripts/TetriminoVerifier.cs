@@ -38,21 +38,16 @@ public class TetriminoVerifier : MonoBehaviour {
                 }
             }
             
-            
-
             if (lineScore > 10)
             {
-                foreach(RaycastHit hit in hits)
+                foreach(GameObject tetriminoPiece in potentialAdditions)
                 {
-                    if(hit.collider.gameObject.tag == "TetriminoPiece")
-                    {
-                        Destroy(hit.collider.gameObject);
-                    }
+                    Destroy(tetriminoPiece);
                 }
-                foreach (GameObject tetriminoPiece in m_previousTetriminosToMoveDown)
-                {
-                    tetriminoPiece.transform.position += new Vector3(0.0f, -1.0f, 0.0f);
-                }
+                //foreach (GameObject tetriminoPiece in m_previousTetriminosToMoveDown)
+                //{
+                //    tetriminoPiece.transform.position += new Vector3(0.0f, -1.0f, 0.0f);
+                //}
                 foreach (GameObject tetriminoPiece in m_tetriminosToMoveDown)
                 {
                     if(tetriminoPiece != null/* && !tetriminoPiece.GetComponent<Controls>().checkBounds(new Vector3(0.0f, -1.0f, 0.0f))*/)
@@ -66,8 +61,9 @@ public class TetriminoVerifier : MonoBehaviour {
                 m_tetriminosToMoveDown = m_tetriminosToMoveDown.Concat(potentialAdditions).ToList();
             }
             gameObject.transform.position += new Vector3(0.0f, -1.0f, 0.0f);
-            m_previousTetriminosToMoveDown = potentialAdditions;
+            //m_previousTetriminosToMoveDown = potentialAdditions;
         }
         gameObject.transform.position = m_startingPosition;
+        m_tetriminosToMoveDown.Clear();
     }
 }
