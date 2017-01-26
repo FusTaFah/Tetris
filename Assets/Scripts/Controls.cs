@@ -7,6 +7,10 @@ public class Controls : MonoBehaviour {
     bool m_inPlay;
     
     public bool InPlay { get { return m_inPlay; } set { m_inPlay = value; } }
+
+    Vector3 m_localTransform;
+
+    public Vector3 LocalTransform { get { return m_localTransform; } set { m_localTransform = value; } }
     
 	// Use this for initialization
 	void Start () {
