@@ -75,6 +75,7 @@ public class TetriminoCreator : MonoBehaviour {
         {
             GameObject tetriminoPiece = (GameObject)Instantiate(Resources.Load("Prefabs/TetriminoPiece"), gameObject.transform.position + position, Quaternion.identity);
             tetriminoPiece.GetComponent<Controls>().InPlay = true;
+            tetriminoPiece.GetComponent<Controls>().LocalTransform = position;
         }
         
     }
