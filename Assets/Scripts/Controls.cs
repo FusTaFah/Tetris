@@ -11,6 +11,10 @@ public class Controls : MonoBehaviour {
     Vector3 m_localTransform;
 
     public Vector3 LocalTransform { get { return m_localTransform; } set { m_localTransform = value; } }
+
+    Vector3 m_storedTransform;
+
+    public Vector3 StoredTransform { set { m_storedTransform = value; } }
     
 	// Use this for initialization
 	void Start () {
