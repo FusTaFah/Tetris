@@ -8,10 +8,12 @@ public class Commander : MonoBehaviour {
     float m_timer;
     public float m_fallDelay;
     public float FallDelay { get { return m_fallDelay; } set { m_fallDelay = value; } }
+    float m_angleOfRotation;
 
     // Use this for initialization
     void Start () {
         tetriminoPiecesInControl = new GameObject[0];
+        m_angleOfRotation = 0.0f;
 	}
 	
 	// Update is called once per frame
@@ -121,5 +123,31 @@ public class Commander : MonoBehaviour {
             }
         }
 
+    }
+
+    void AttemptRotation()
+    {
+        bool verifiedForRotation = true;
+        foreach (GameObject tetriminoPiece in GameObject.FindGameObjectsWithTag("TetriminoPiece"))
+        {
+            if (tetriminoPiece.GetComponent<Controls>().InPlay)
+            {
+                Vector3 tetPiPos = tetriminoPiece.transform.position;
+                Vector3 tetPiLocPos = tetriminoPiece.GetComponent<Controls>().LocalTransform;
+                Vector3 targetPosition =
+                    (tetPiPos - tetPiLocPos) +
+                    new Vector3(
+                        tetPiPos.x * Mathf.Sin(m_angleOfRotation + Mathf.PI / 2.0f),
+                        tetPiPos.y * Mathf.Cos(m_angleOfRotation + Mathf.PI / 2.0f),
+                        0.0f);
+                RaycastHit raycastInfo;
+                if(Physics.SphereCast(tetPiPos, 0.25f, tetriminoPiece.transform.forward, out raycastInfo, 0.01f))
+                {
+                    verifiedForRotation = false;
+                    break;
+                }
+
+            }
+        }
     }
 }
