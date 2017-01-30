@@ -12,6 +12,10 @@ public class Controls : MonoBehaviour {
 
     public Vector3 LocalTransform { get { return m_localTransform; } set { m_localTransform = value; } }
 
+    Vector3 m_storedLocalTransform;
+
+    public Vector3 StoredLocalTransform { get { return m_storedLocalTransform; } set { m_storedLocalTransform = value; } }
+
     Vector3 m_storedTransform;
 
     public Vector3 StoredTransform { get { return m_storedTransform; } set { m_storedTransform = value; } }
