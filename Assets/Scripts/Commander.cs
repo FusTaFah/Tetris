@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Commander : MonoBehaviour {
 
-    GameObject[] tetriminoPiecesInControl;
+    List<GameObject> tetriminoPiecesInControl;
     float m_timer;
     public float m_fallDelay;
     public float FallDelay { get { return m_fallDelay; } set { m_fallDelay = value; } }
@@ -12,16 +12,20 @@ public class Commander : MonoBehaviour {
 
     // Use this for initialization
     void Start () {
-        tetriminoPiecesInControl = new GameObject[0];
+        tetriminoPiecesInControl = new List<GameObject>();
         m_angleOfRotation = 0.0f;
 	}
 	
 	// Update is called once per frame
 	void Update () {
-        if(tetriminoPiecesInControl.Length == 0)
+        if(tetriminoPiecesInControl.Count == 0)
         {
             Debug.Log("get pieces");
-            tetriminoPiecesInControl = GameObject.FindGameObjectsWithTag("TetriminoPiece");
+            SignalDeployed();
+        }
+        if (Input.GetKeyDown(KeyCode.W))
+        {
+            AttemptRotation();
         }
         if (Input.GetKeyDown(KeyCode.A))
         {
@@ -50,26 +54,20 @@ public class Commander : MonoBehaviour {
     void attemptMovement(Vector3 movementDirection)
     {
         bool allClear = true;
-        foreach(GameObject piece in GameObject.FindGameObjectsWithTag("TetriminoPiece"))
+        foreach(GameObject piece in tetriminoPiecesInControl)
         {
-            if (piece.GetComponent<Controls>().InPlay)
+            if (piece.GetComponent<Controls>().checkBounds(movementDirection))
             {
-                if (piece.GetComponent<Controls>().checkBounds(movementDirection))
-                {
-                    allClear = false;
-                    break;
-                }
+                allClear = false;
+                break;
             }
         }
 
         if (allClear)
         {
-            foreach(GameObject piece in GameObject.FindGameObjectsWithTag("TetriminoPiece"))
+            foreach(GameObject piece in tetriminoPiecesInControl)
             {
-                if (piece.GetComponent<Controls>().InPlay)
-                {
-                    piece.transform.position += movementDirection;
-                }
+                piece.transform.position += movementDirection;
             }
         }
 
@@ -77,35 +75,29 @@ public class Commander : MonoBehaviour {
 
     public void SignalDeployed()
     {
-        tetriminoPiecesInControl = new GameObject[0];
-        tetriminoPiecesInControl = GameObject.FindGameObjectsWithTag("TetriminoPiece");
+        m_angleOfRotation = 0.0f;
+        tetriminoPiecesInControl = new List<GameObject>(GameObject.FindGameObjectsWithTag("TetriminoPiece"));
+        tetriminoPiecesInControl.RemoveAll(x => !x.GetComponent<Controls>().InPlay);
     }
 
     void UpdateAllPlayableTetriminos()
     {
         bool verifiedForMovement = true;
         
-        foreach (GameObject g in GameObject.FindGameObjectsWithTag("TetriminoPiece"))
+        foreach (GameObject g in tetriminoPiecesInControl)
         {
-            if (g.GetComponent<Controls>().InPlay)
+            if (g.GetComponent<Controls>().checkBounds(new Vector3(0.0f, -1.0f, 0.0f)))
             {
-                if (g.GetComponent<Controls>().checkBounds(new Vector3(0.0f, -1.0f, 0.0f)))
-                {
-                    verifiedForMovement = false;
-                    break;
-                }
+                verifiedForMovement = false;
+                break;
             }
-            
         }
             
         if (!verifiedForMovement)
         {
-            foreach (GameObject g in GameObject.FindGameObjectsWithTag("TetriminoPiece"))
+            foreach (GameObject g in tetriminoPiecesInControl)
             {
-                if (g != gameObject && g.GetComponent<Controls>().InPlay)
-                {
-                    g.GetComponent<Controls>().InPlay = false;
-                }
+                 g.GetComponent<Controls>().InPlay = false;
             }
             GameObject.Find("TetriminoFactory").GetComponent<TetriminoCreator>().TetriminoDeployed();
             GameObject.Find("TetriminoVerifier").GetComponent<TetriminoVerifier>().SignalTetriminoVerifier();
@@ -114,12 +106,9 @@ public class Commander : MonoBehaviour {
         }
         else
         {
-            foreach (GameObject g in GameObject.FindGameObjectsWithTag("TetriminoPiece"))
+            foreach (GameObject g in tetriminoPiecesInControl)
             {
-                if (g.GetComponent<Controls>().InPlay)
-                {
-                    g.transform.position += new Vector3(0.0f, -1.0f, 0.0f);
-                }
+                g.transform.position += new Vector3(0.0f, -1.0f, 0.0f);
             }
         }
 
@@ -128,25 +117,51 @@ public class Commander : MonoBehaviour {
     void AttemptRotation()
     {
         bool verifiedForRotation = true;
-        foreach (GameObject tetriminoPiece in GameObject.FindGameObjectsWithTag("TetriminoPiece"))
+        foreach (GameObject tetriminoPiece in tetriminoPiecesInControl)
         {
-            if (tetriminoPiece.GetComponent<Controls>().InPlay)
+            Vector3 tetPiPos = tetriminoPiece.transform.position;
+            Vector3 tetPiLocPos = tetriminoPiece.GetComponent<Controls>().LocalTransform;
+            tetriminoPiece.GetComponent<Controls>().StoredLocalTransform = new Vector3(
+                    tetPiLocPos.x * Mathf.Cos(m_angleOfRotation + Mathf.PI / 2.0f) - tetPiLocPos.y * Mathf.Sin(Mathf.PI / 2.0f),
+                    tetPiLocPos.x * Mathf.Sin(m_angleOfRotation + Mathf.PI / 2.0f) + tetPiLocPos.y * Mathf.Cos(Mathf.PI / 2.0f),
+                    0.0f);
+            Vector3 targetPosition =
+                (tetPiPos - tetPiLocPos) +
+                tetriminoPiece.GetComponent<Controls>().StoredLocalTransform;
+            RaycastHit boxCheckInfo;
+            if(Physics.BoxCast(targetPosition, new Vector3(0.25f, 0.25f, 0.25f), Vector3.zero, out boxCheckInfo, Quaternion.identity))
             {
-                Vector3 tetPiPos = tetriminoPiece.transform.position;
-                Vector3 tetPiLocPos = tetriminoPiece.GetComponent<Controls>().LocalTransform;
-                Vector3 targetPosition =
-                    (tetPiPos - tetPiLocPos) +
-                    new Vector3(
-                        tetPiPos.x * Mathf.Sin(m_angleOfRotation + Mathf.PI / 2.0f),
-                        tetPiPos.y * Mathf.Cos(m_angleOfRotation + Mathf.PI / 2.0f),
-                        0.0f);
-                RaycastHit raycastInfo;
-                if(Physics.SphereCast(tetPiPos, 0.25f, tetriminoPiece.transform.forward, out raycastInfo, 0.01f))
+                //let's assume for now that we cant do the rotation
+                verifiedForRotation = false;
+                if(boxCheckInfo.collider.gameObject.tag == "TetriminoPiece")
                 {
+                    //but if the collider belongs to a tetrimino...
+                    if (boxCheckInfo.collider.gameObject.GetComponent<Controls>().InPlay)
+                    {
+                        //...and if sait tetrimino is in play, go ahead and verify this part of the check
+                        verifiedForRotation = true;
+                    }
+                }else
+                {
+                    //otherwise break out of all the checks; we cannot rotate to this point
                     verifiedForRotation = false;
+                }
+                if (!verifiedForRotation)
+                {
                     break;
                 }
-
+            }
+            else
+            {
+                tetriminoPiece.GetComponent<Controls>().StoredTransform = targetPosition;
+            }
+        }
+        if (verifiedForRotation)
+        {
+            foreach (GameObject tetriminoPiece in tetriminoPiecesInControl)
+            {
+                tetriminoPiece.transform.position = tetriminoPiece.GetComponent<Controls>().StoredTransform;
+                tetriminoPiece.GetComponent<Controls>().LocalTransform = tetriminoPiece.GetComponent<Controls>().StoredLocalTransform;
             }
         }
     }
