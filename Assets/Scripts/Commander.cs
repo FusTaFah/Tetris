@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class Commander : MonoBehaviour {
 
@@ -9,6 +10,7 @@ public class Commander : MonoBehaviour {
     public float m_fallDelay;
     public float FallDelay { get { return m_fallDelay; } set { m_fallDelay = value; } }
     float m_angleOfRotation;
+    bool m_paused;
 
     // Use this for initialization
     void Start () {
@@ -26,6 +28,17 @@ public class Commander : MonoBehaviour {
         if (Input.GetKeyDown(KeyCode.W))
         {
             AttemptRotation();
+        }
+        if (Input.GetKeyDown(KeyCode.P))
+        {
+            if(m_paused = !m_paused)
+            {
+                Time.timeScale = 0.0f;
+            }
+            else
+            {
+                Time.timeScale = 1.0f;
+            }
         }
         if (Input.GetKeyDown(KeyCode.A))
         {
@@ -167,6 +180,14 @@ public class Commander : MonoBehaviour {
                 tetriminoPiece.transform.position = tetriminoPiece.GetComponent<Controls>().StoredTransform;
                 tetriminoPiece.GetComponent<Controls>().LocalTransform = tetriminoPiece.GetComponent<Controls>().StoredLocalTransform;
             }
+        }
+    }
+
+    void OnGUI()
+    {
+        if (m_paused)
+        {
+            GUI.Label(new Rect(new Vector2(Screen.width / 2.0f, Screen.height / 2.0f), new Vector2(200.0f, 50.0f)), "PAUSED");
         }
     }
 }
