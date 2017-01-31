@@ -128,20 +128,20 @@ public class Commander : MonoBehaviour {
             Vector3 targetPosition =
                 (tetPiPos - tetPiLocPos) +
                 tetriminoPiece.GetComponent<Controls>().StoredLocalTransform;
-            RaycastHit boxCheckInfo;
-            if(Physics.BoxCast(targetPosition, new Vector3(0.25f, 0.25f, 0.25f), Vector3.zero, out boxCheckInfo, Quaternion.identity))
-            {
+
+            foreach(Collider collider in Physics.OverlapBox(targetPosition, new Vector3(0.25f, 0.25f, 0.25f))){
                 //let's assume for now that we cant do the rotation
                 verifiedForRotation = false;
-                if(boxCheckInfo.collider.gameObject.tag == "TetriminoPiece")
+                if (collider.gameObject.tag == "TetriminoPiece")
                 {
                     //but if the collider belongs to a tetrimino...
-                    if (boxCheckInfo.collider.gameObject.GetComponent<Controls>().InPlay)
+                    if (collider.gameObject.GetComponent<Controls>().InPlay)
                     {
-                        //...and if sait tetrimino is in play, go ahead and verify this part of the check
+                        //...and if said tetrimino is in play, go ahead and verify this part of the check
                         verifiedForRotation = true;
                     }
-                }else
+                }
+                else
                 {
                     //otherwise break out of all the checks; we cannot rotate to this point
                     verifiedForRotation = false;
@@ -151,9 +151,13 @@ public class Commander : MonoBehaviour {
                     break;
                 }
             }
-            else
+                
+            if(verifiedForRotation)
             {
                 tetriminoPiece.GetComponent<Controls>().StoredTransform = targetPosition;
+            }else
+            {
+                break;
             }
         }
         if (verifiedForRotation)
