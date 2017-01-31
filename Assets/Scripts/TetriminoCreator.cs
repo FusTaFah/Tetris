@@ -76,6 +76,11 @@ public class TetriminoCreator : MonoBehaviour {
             GameObject tetriminoPiece = (GameObject)Instantiate(Resources.Load("Prefabs/TetriminoPiece"), gameObject.transform.position + position, Quaternion.identity);
             tetriminoPiece.GetComponent<Controls>().InPlay = true;
             tetriminoPiece.GetComponent<Controls>().LocalTransform = position;
+            tetriminoPiece.GetComponent<Renderer>().material.color =
+                new Color(
+                    Mathf.Cos(shapeIndex) - Mathf.Sin(shapeIndex),
+                    Mathf.Sin(shapeIndex) + Mathf.Cos(shapeIndex),
+                    Mathf.Tan(shapeIndex));
         }
         
     }
