@@ -6,26 +6,46 @@ using UnityEngine.UI;
 
 public class SingletonConfig : MonoBehaviour {
 
-    int level;
+    int m_level;
+    int m_score;
 
 	// Use this for initialization
 	void Start () {
         DontDestroyOnLoad(gameObject);
-        level = 0;
+        m_level = 0;
+        m_score = 0;
 	}
 	
 	// Update is called once per frame
 	void Update () {
-		
+        if (SceneManager.GetActiveScene().name == "MainMenu")
+        {
+            m_level = (int)GameObject.Find("Slider").GetComponent<Slider>().value;
+            GameObject.Find("Level").GetComponent<Text>().text = "Level " + m_level;
+        }
 	}
 
     public void StartGame()
     {
         if(SceneManager.GetActiveScene().name == "MainMenu")
         {
-            level = (int)GameObject.Find("Slider").GetComponent<Slider>().value;
             SceneManager.LoadScene("demo");
         }
         
+    }
+
+    public int GetLevel()
+    {
+        return m_level;
+    }
+
+    public void IncrementScore(int score)
+    {
+        m_score += score;
+    }
+
+    public int GetScore()
+    {
+        return m_score;
     }
 }

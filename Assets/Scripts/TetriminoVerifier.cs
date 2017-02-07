@@ -44,24 +44,20 @@ public class TetriminoVerifier : MonoBehaviour {
                 {
                     Destroy(tetriminoPiece);
                 }
-                //foreach (GameObject tetriminoPiece in m_previousTetriminosToMoveDown)
-                //{
-                //    tetriminoPiece.transform.position += new Vector3(0.0f, -1.0f, 0.0f);
-                //}
                 foreach (GameObject tetriminoPiece in m_tetriminosToMoveDown)
                 {
-                    if(tetriminoPiece != null/* && !tetriminoPiece.GetComponent<Controls>().checkBounds(new Vector3(0.0f, -1.0f, 0.0f))*/)
+                    if(tetriminoPiece != null)
                     {
                         tetriminoPiece.transform.position += new Vector3(0.0f, -1.0f, 0.0f);
                     }
                 }
+                GameObject.Find("Singleton").GetComponent<SingletonConfig>().IncrementScore(10);
             }
             else
             {
                 m_tetriminosToMoveDown = m_tetriminosToMoveDown.Concat(potentialAdditions).ToList();
             }
             gameObject.transform.position += new Vector3(0.0f, -1.0f, 0.0f);
-            //m_previousTetriminosToMoveDown = potentialAdditions;
         }
         gameObject.transform.position = m_startingPosition;
         m_tetriminosToMoveDown.Clear();

@@ -11,12 +11,23 @@ public class Commander : MonoBehaviour {
     public float FallDelay { get { return m_fallDelay; } set { m_fallDelay = value; } }
     float m_angleOfRotation;
     bool m_paused;
+    SingletonConfig m_config;
+    int m_level;
 
     // Use this for initialization
     void Start () {
         tetriminoPiecesInControl = new List<GameObject>();
         m_angleOfRotation = 0.0f;
-	}
+        try
+        {
+            m_config = GameObject.Find("Singleton").GetComponent<SingletonConfig>();
+        }catch(System.NullReferenceException nre)
+        {
+            m_config = null;
+        }
+        m_level = m_config != null ? m_config.GetLevel() : 1;
+        m_fallDelay = 1.0f / (float)m_level;
+    }
 	
 	// Update is called once per frame
 	void Update () {
