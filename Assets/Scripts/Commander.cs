@@ -194,6 +194,11 @@ public class Commander : MonoBehaviour {
         }
     }
 
+    public void Quit()
+    {
+        GameObject.Find("Singleton").GetComponent<SingletonConfig>().ReturnToMainMenu();
+    }
+
     void OnGUI()
     {
         if (m_paused)

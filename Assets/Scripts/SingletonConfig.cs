@@ -34,6 +34,22 @@ public class SingletonConfig : MonoBehaviour {
         
     }
 
+    public void StartCreation()
+    {
+        if(SceneManager.GetActiveScene().name == "MainMenu")
+        {
+            SceneManager.LoadScene("CreateTetrimino");
+        }
+    }
+
+    public void ReturnToMainMenu()
+    {
+        if(SceneManager.GetActiveScene().name != "MainMenu")
+        {
+            SceneManager.LoadScene("MainMenu");
+        }
+    }
+
     public int GetLevel()
     {
         return m_level;

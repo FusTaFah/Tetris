@@ -4,12 +4,14 @@ using UnityEngine;
 
 public class CreationScript : MonoBehaviour {
 
+
+
 	// Use this for initialization
 	void Start () {
-        Vector3 originPoint = new Vector3(-2.5f, 2.0f, 0.0f);
-        for(int i = 0; i < 5; i++)
+        Vector3 originPoint = new Vector3(-5.0f, 10.0f, 0.0f);
+        for(int i = 0; i < 14; i++)
         {
-            for(int j = 0; j < 6; j++)
+            for(int j = 0; j < 11; j++)
             {
                 Instantiate(Resources.Load("Prefabs/BlankTetrimino"), originPoint + new Vector3(j, -i, 0), Quaternion.identity);
             }
@@ -48,7 +50,31 @@ public class CreationScript : MonoBehaviour {
                 }
             }
         }
+    }
 
-        
+    public void Save()
+    {
+        NyetriminoList nyetriminosThatExist = JsonUtility.FromJson<NyetriminoList>(System.IO.File.ReadAllText("info.json"));
+        if (nyetriminosThatExist == null)
+        {
+            nyetriminosThatExist = new NyetriminoList();
+        }
+        Nyetrimino n = new Nyetrimino();
+        List<Vector3> positionsToAdd = new List<Vector3>();
+        foreach (GameObject g in GameObject.FindGameObjectsWithTag("BlankTetriminoPiece"))
+        {
+            if (g.GetComponent<BlankTetriminoBehaviour>().IsSelected())
+            {
+                positionsToAdd.Add(g.transform.position);
+            }
+        }
+        n.positions = positionsToAdd;
+        nyetriminosThatExist.nyetriminos.Add(n);
+        System.IO.File.WriteAllText("info.json", JsonUtility.ToJson(nyetriminosThatExist));
+    }
+
+    public void Quit()
+    {
+        GameObject.Find("Singleton").GetComponent<SingletonConfig>().ReturnToMainMenu();
     }
 }

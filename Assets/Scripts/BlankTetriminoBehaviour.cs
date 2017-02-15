@@ -37,4 +37,9 @@ public class BlankTetriminoBehaviour : MonoBehaviour {
             );
         }
     }
+    
+    public bool IsSelected()
+    {
+        return m_selected;
+    }
 }

@@ -5,7 +5,9 @@ using UnityEngine;
 
 public class TetriminoCreator : MonoBehaviour {
 
+    //[deprecated]
     List<List<Vector3>> m_patterns;
+    NyetriminoList m_nyetriminos;
     public int depth;
 
     // Use this for initialization
@@ -59,6 +61,8 @@ public class TetriminoCreator : MonoBehaviour {
         DEBUG_STAGGERED = DEBUG_STAGGERED.Concat(DEBUG).ToList();
         m_patterns.Add(DEBUG_STAGGERED);
 
+        m_nyetriminos = JsonUtility.FromJson<NyetriminoList>(System.IO.File.ReadAllText("info.json"));
+
         TetriminoDeployed();
     }
 	
@@ -69,9 +73,22 @@ public class TetriminoCreator : MonoBehaviour {
 
     public void TetriminoDeployed()
     {
-        int shapeIndex = (int)(Mathf.Floor(Random.value * 4.0f));
-        shapeIndex = shapeIndex == 4 ? 3 : shapeIndex;
-        foreach(Vector3 position in m_patterns[shapeIndex])
+        //int shapeIndex = (int)(Mathf.Floor(Random.value * 4.0f));
+        //shapeIndex = shapeIndex == 4 ? 3 : shapeIndex;
+        //foreach(Vector3 position in m_patterns[shapeIndex])
+        //{
+        //    GameObject tetriminoPiece = (GameObject)Instantiate(Resources.Load("Prefabs/TetriminoPiece"), gameObject.transform.position + position, Quaternion.identity);
+        //    tetriminoPiece.GetComponent<Controls>().InPlay = true;
+        //    tetriminoPiece.GetComponent<Controls>().LocalTransform = position;
+        //    tetriminoPiece.GetComponent<Renderer>().material.color =
+        //        new Color(
+        //            Mathf.Cos(shapeIndex) - Mathf.Sin(shapeIndex),
+        //            Mathf.Sin(shapeIndex) + Mathf.Cos(shapeIndex),
+        //            Mathf.Tan(shapeIndex));
+        //}
+
+        int shapeIndex = Mathf.Min(m_nyetriminos.nyetriminos.Count - 1, (int)(Mathf.Floor(Random.value * m_nyetriminos.nyetriminos.Count)));
+        foreach (Vector3 position in m_nyetriminos.nyetriminos[shapeIndex].positions)
         {
             GameObject tetriminoPiece = (GameObject)Instantiate(Resources.Load("Prefabs/TetriminoPiece"), gameObject.transform.position + position, Quaternion.identity);
             tetriminoPiece.GetComponent<Controls>().InPlay = true;
@@ -82,6 +99,6 @@ public class TetriminoCreator : MonoBehaviour {
                     Mathf.Sin(shapeIndex) + Mathf.Cos(shapeIndex),
                     Mathf.Tan(shapeIndex));
         }
-        
+
     }
 }
